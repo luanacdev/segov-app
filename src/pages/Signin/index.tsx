@@ -1,8 +1,6 @@
-import { AxiosResponse } from 'axios'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { AuthContext } from '../../contexts/AuthContext'
-import { getAccount } from '../../services/account.service'
 import {
   SigninBox,
   SigninButton,
@@ -13,11 +11,10 @@ import {
   SigninRightBox
 } from './styles'
 
-import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 import men from '../../assets/men-on-cell-phone.svg'
 import Input from '../../components/Form/Input/'
 import { MESSAGE } from '../../utils/messages'
-import { useNavigate } from 'react-router-dom'
 
 interface FieldValues {
   email: string;
@@ -29,7 +26,7 @@ interface SigninProps {
 }
 
 export function Signin({ onTestSignin }: SigninProps) {
-  const { setUsers, signin } = useContext(AuthContext)
+  const {  signin } = useContext(AuthContext)
   const history = useNavigate();  
 
   const {
@@ -43,18 +40,7 @@ export function Signin({ onTestSignin }: SigninProps) {
     signin(data.email, data.password)
   }
 
-  useEffect(() => {
-    localStorage.removeItem('USER_TOKEN')
-    localStorage.removeItem('USER_INFO')
-
-    getAccount()
-      .then(async (res: AxiosResponse) => {
-        setUsers(res.data)
-      })
-      .catch(() => {
-        return toast.error('Erro interno no servidor.')
-      })
-  }, [setUsers])
+  
 
   return (
     <>

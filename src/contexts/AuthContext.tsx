@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useState } from 'react'
 import { toast } from 'react-toastify'
 import { IUser } from '../interfaces/IAccount'
+import { signIn } from '../services/account.service'
 
 interface AuthContextType {
   user: IUser[]
@@ -19,19 +20,12 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUsers] = useState<IUser[]>([])
 
   const signin = (email: string, password: string) => {
-    const hasUser = user?.filter((user) => user.email === email)
+    signIn({email, password}).then((response) => {
+      toast.success('Login realizado com sucesso!')
+    }).catch((error) => {
+      toast.success(error.response.data)
 
-    if (hasUser?.length) {
-      if (hasUser[0].email === email && hasUser[0].password === password) {
-        const token = Math.random().toString(36).substring(2)
-        localStorage.setItem('USER_TOKEN', JSON.stringify({ token }))
-        localStorage.setItem('USER_INFO', JSON.stringify( hasUser[0] ))
-
-        return (window.location.href = '/home')
-      } else {
-        toast.error('E-mail ou senha incorretos ')
-      }
-    }
+    })
   }
 
   const sigout = () => {
